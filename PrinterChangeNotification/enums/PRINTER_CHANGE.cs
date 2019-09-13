@@ -3,7 +3,7 @@
 namespace PrinterChangeNotification.enums
 {
     [Flags]
-    internal enum PRINTER_CHANGE : UInt32
+    public enum PRINTER_CHANGE : UInt32
     {
         PRINTER_CHANGE_ADD_PRINTER              =0x00000001,
         PRINTER_CHANGE_SET_PRINTER              =0x00000002,

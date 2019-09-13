@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrinterChangeNotification", "PrinterChangeNotification\PrinterChangeNotification.csproj", "{F1D1909F-BCFF-4333-B658-CACEDADD2752}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterChangeNotification", "PrinterChangeNotification\PrinterChangeNotification.csproj", "{F1D1909F-BCFF-4333-B658-CACEDADD2752}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor", "Monitor\Monitor.csproj", "{C1FC4E3C-5BB6-4782-BC86-6D4B10BDF39F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F1D1909F-BCFF-4333-B658-CACEDADD2752} = {F1D1909F-BCFF-4333-B658-CACEDADD2752}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{F1D1909F-BCFF-4333-B658-CACEDADD2752}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D1909F-BCFF-4333-B658-CACEDADD2752}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D1909F-BCFF-4333-B658-CACEDADD2752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1FC4E3C-5BB6-4782-BC86-6D4B10BDF39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FC4E3C-5BB6-4782-BC86-6D4B10BDF39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FC4E3C-5BB6-4782-BC86-6D4B10BDF39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FC4E3C-5BB6-4782-BC86-6D4B10BDF39F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
