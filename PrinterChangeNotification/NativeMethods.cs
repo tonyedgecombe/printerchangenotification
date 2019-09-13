@@ -23,7 +23,7 @@ namespace PrinterChangeNotification
         //);
 
         [DllImport("winspool.drv", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool FindNextPrinterChangeNotification(IntPtr hChange, ref UInt32 pdwChange, IntPtr pvReserved, ref IntPtr ppPrinterNotifyInfo);
+        public static extern bool FindNextPrinterChangeNotification(IntPtr hChange, out UInt32 pdwChange, IntPtr pvReserved, IntPtr ppPrinterNotifyInfo);
 
         //BOOL WINAPI FreePrinterNotifyInfo(
         //    __in PPRINTER_NOTIFY_INFO pPrinterNotifyInfo
@@ -38,5 +38,21 @@ namespace PrinterChangeNotification
 
         [DllImport("winspool.drv", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool FindClosePrinterChangeNotification(IntPtr hChange);
+
+        //BOOL WINAPI OpenPrinterW(
+        //    _In_opt_ LPWSTR             pPrinterName,
+        //    _Out_ LPHANDLE            phPrinter,
+        //    _In_opt_ LPPRINTER_DEFAULTSW pDefault
+        //);
+
+        [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool OpenPrinter(string pPrinterName, out IntPtr phPrinter, IntPtr pDefault);
+
+        //BOOL WINAPI ClosePrinter(
+        //    _In_ HANDLE hPrinter
+        //);
+
+        [DllImport("winspool.drv", SetLastError = true)]
+        public static extern bool ClosePrinter(IntPtr hPrinter);
     }
 }

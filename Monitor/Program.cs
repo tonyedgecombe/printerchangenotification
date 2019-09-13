@@ -1,38 +1,23 @@
 ﻿using System;
-using System.ComponentModel;
-using PrinterChangeNotification;
-using PrinterChangeNotification.enums;
 
 namespace Monitor
 {
     class Program
     {
-
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Monitoring print server");
-
             using (var printer = new Printer(null))
+            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printer))
+            using (var waitHandle = printerChangeNotification.WaitHandle)
             {
-                var changeHandle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(), (UInt32) PRINTER_CHANGE.PRINTER_CHANGE_ALL, 0, IntPtr.Zero);
-                if (changeHandle == new IntPtr(-1))
+                while (true)
                 {
-                    throw new Win32Exception();
-                }
+                    Console.WriteLine("Waiting");
 
-                try
-                {
-                    while (true)
-                    {
-                        Console.WriteLine("Waiting for change");
+                    waitHandle.WaitOne();
+                    printerChangeNotification.FindNextChangeNotification();
 
-                        break;
-                    }
-                }
-                finally
-                {
-                    Console.WriteLine("Ending monitoring");
-                    NativeMethods.FindClosePrinterChangeNotification(changeHandle);
+                    Console.WriteLine("Notification received");
                 }
             }
         }
