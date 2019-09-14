@@ -8,7 +8,9 @@ namespace Monitor
         static void Main()
         {
             using (var printer = new Printer(null))
-            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printer, PRINTER_CHANGE.PRINTER_CHANGE_DELETE_PRINTER))
+            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printer, 
+                        PRINTER_CHANGE.PRINTER_CHANGE_DELETE_PRINTER,
+                        PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL))
             using (var waitHandle = printerChangeNotification.WaitHandle)
             {
                 while (true)
@@ -16,7 +18,8 @@ namespace Monitor
                     Console.WriteLine("Waiting");
 
                     waitHandle.WaitOne();
-                    printerChangeNotification.FindNextPrinterChangeNotification();
+                    var change = printerChangeNotification.FindNextPrinterChangeNotification();
+                    Console.WriteLine($"Change: {change}");
 
                     Console.WriteLine("Notification received");
                 }

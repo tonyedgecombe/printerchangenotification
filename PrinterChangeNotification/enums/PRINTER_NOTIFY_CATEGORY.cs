@@ -7,9 +7,9 @@ namespace PrinterChangeNotification.enums
     // TODO Verify which is correct
 
     [Flags]
-    internal enum PRINTER_NOTIFY_CATEGORY : UInt32
+    public enum PRINTER_NOTIFY_CATEGORY : UInt32
     {
-        PRINTER_NOTIFY_CATEGORY_ALL              =0x001000,
-        PRINTER_NOTIFY_CATEGORY_3D               =0x002000,
+        PRINTER_NOTIFY_CATEGORY_ALL = 0x001000,
+        PRINTER_NOTIFY_CATEGORY_3D  = 0x002000,
     }
 }
