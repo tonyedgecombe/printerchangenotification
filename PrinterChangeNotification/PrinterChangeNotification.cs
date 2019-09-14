@@ -19,18 +19,18 @@ namespace PrinterChangeNotification
     {
         public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
 
-        public PrinterChangeNotification(Printer printer) : base(true)
+        public PrinterChangeNotification(Printer printer, PRINTER_CHANGE changes) : base(true)
         {
             Console.WriteLine("Starting monitoring");
 
-            handle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(), (UInt32)PRINTER_CHANGE.PRINTER_CHANGE_ALL, 0, IntPtr.Zero);
+            handle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(), (UInt32)changes, 0, IntPtr.Zero);
             if (handle == new IntPtr(-1))
             {
                 throw new Win32Exception();
             }
         }
 
-        public void FindNextChangeNotification()
+        public void FindNextPrinterChangeNotification()
         {
             if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, IntPtr.Zero, IntPtr.Zero))
             {
@@ -39,6 +39,7 @@ namespace PrinterChangeNotification
 
             Console.WriteLine($"Change: {change}");
         }
+
 
         protected override bool ReleaseHandle()
         {
