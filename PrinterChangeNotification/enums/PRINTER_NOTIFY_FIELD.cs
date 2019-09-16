@@ -4,7 +4,7 @@
 namespace PrinterChangeNotification.enums
 {
     [Flags]
-    internal enum PRINTER_NOTIFY_FIELD : UInt32
+    public enum PRINTER_NOTIFY_FIELD : UInt32
 
     {
         PRINTER_NOTIFY_FIELD_SERVER_NAME             = 0x00,

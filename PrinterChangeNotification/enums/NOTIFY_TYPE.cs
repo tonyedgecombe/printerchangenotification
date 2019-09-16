@@ -4,7 +4,7 @@
 namespace PrinterChangeNotification.enums
 {
     [Flags]
-    internal enum NOTIFY_TYPE : UInt32
+    public enum NOTIFY_TYPE : UInt32
     {
         PRINTER_NOTIFY_TYPE = 0x00,
         JOB_NOTIFY_TYPE     = 0x01,

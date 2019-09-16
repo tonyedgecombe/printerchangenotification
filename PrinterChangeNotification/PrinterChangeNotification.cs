@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using Monitor;
@@ -21,17 +22,37 @@ namespace PrinterChangeNotification
 
         public PrinterChangeNotification(Printer printer, 
                                          PRINTER_CHANGE changes, 
-                                         PRINTER_NOTIFY_CATEGORY category) : base(true)
+                                         PRINTER_NOTIFY_CATEGORY category,
+                                         PrinterNotifyOptions options) : base(true)
         {
             Console.WriteLine("Starting monitoring");
 
-            handle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(), 
-                                                                (UInt32)changes, 
-                                                                     (UInt32)category, 
-                                                            IntPtr.Zero);
-            if (handle == new IntPtr(-1))
+            var hGlobalPtr = IntPtr.Zero;
+
+            if (options != null)
             {
-                throw new Win32Exception();
+                var size = options.SizeOf();
+                hGlobalPtr = Marshal.AllocHGlobal(size);
+                options.ToPtr(hGlobalPtr);
+            }
+
+            try
+            {
+                handle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(),
+                    (UInt32) changes,
+                    (UInt32) category,
+                    hGlobalPtr);
+                if (handle == new IntPtr(-1))
+                {
+                    throw new Win32Exception();
+                }
+            }
+            finally
+            {
+                if (hGlobalPtr != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(hGlobalPtr);
+                }
             }
         }
 
