@@ -13,10 +13,10 @@ namespace PrinterChangeNotification
         [StructLayout(LayoutKind.Sequential)]
         private struct PRINTER_NOTIFY_OPTIONS_TYPE
         {
-            public Int32 Type;
-            public Int32 Reserved0;
-            public UInt32 Reserved1;
-            public UInt32 Reserved2;
+            public UInt16 Type;
+            private UInt16 Reserved0;
+            private UInt32 Reserved1;
+            private UInt32 Reserved2;
             public UInt32 Count;
             public IntPtr pFields; // *DWORD
         }
@@ -34,7 +34,7 @@ namespace PrinterChangeNotification
             var pos = ptr + Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>();
 
             PRINTER_NOTIFY_OPTIONS_TYPE optionsType = default;
-            optionsType.Type = (int) Type;
+            optionsType.Type = (UInt16) Type;
             optionsType.Count = (uint) Fields.Count;
             optionsType.pFields = pos;
 

@@ -15,20 +15,22 @@ namespace Monitor
                 {
                     new PrinterNotifyOptionsType
                     {
+                        Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
+                        Fields =
+                        {
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_COMMENT,
+                        }
+                    },
+                    new PrinterNotifyOptionsType
+                    {
                         Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
                         Fields =
                         {
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME,
                             (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES,
                         }
                     },
-                    //new PrinterNotifyOptionsType()
-                    //{
-                    //    Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
-                    //    Fields =
-                    //    {
-                    //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
-                    //    }
-                    //},
                 }
             };
 

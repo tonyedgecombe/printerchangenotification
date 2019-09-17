@@ -3,7 +3,6 @@
 
 namespace PrinterChangeNotification.enums
 {
-    [Flags]
     public enum PRINTER_NOTIFY_FIELD : UInt32
 
     {

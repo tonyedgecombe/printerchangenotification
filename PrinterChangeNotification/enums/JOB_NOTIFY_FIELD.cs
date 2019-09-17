@@ -3,7 +3,6 @@
 
 namespace PrinterChangeNotification.enums
 {
-    [Flags]
     public enum JOB_NOTIFY_FIELD : UInt32
     { 
         JOB_NOTIFY_FIELD_PRINTER_NAME                = 0x00,
