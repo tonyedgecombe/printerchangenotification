@@ -8,16 +8,16 @@ using PrinterChangeNotification.enums;
 
 namespace PrinterChangeNotification
 {
-    internal class PrinterChangeNotificationWaitHandle : WaitHandle
-    {
-        public PrinterChangeNotificationWaitHandle(IntPtr handle)
-        {
-            SafeWaitHandle = new SafeWaitHandle(handle, false);
-        }
-    }
-
     public class PrinterChangeNotification : SafeHandleZeroOrMinusOneIsInvalid
     {
+        private class PrinterChangeNotificationWaitHandle : WaitHandle
+        {
+            public PrinterChangeNotificationWaitHandle(IntPtr handle)
+            {
+                SafeWaitHandle = new SafeWaitHandle(handle, false);
+            }
+        }
+
         public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
 
         public PrinterChangeNotification(Printer printer, 

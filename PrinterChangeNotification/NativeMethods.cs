@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace PrinterChangeNotification
 {
-    public class NativeMethods
+    internal class NativeMethods
     {
         //HANDLE WINAPI FindFirstPrinterChangeNotification(
         //    __in HANDLE hPrinter,
