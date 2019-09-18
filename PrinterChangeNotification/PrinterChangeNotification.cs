@@ -51,7 +51,7 @@ namespace PrinterChangeNotification
             {
                 if (hGlobalPtr != IntPtr.Zero)
                 {
-                    //Marshal.FreeHGlobal(hGlobalPtr);
+                    Marshal.FreeHGlobal(hGlobalPtr);
                 }
             }
         }
