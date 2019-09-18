@@ -53,14 +53,32 @@ namespace PrinterChangeNotification
             }
         }
 
-        public uint FindNextPrinterChangeNotification()
+        public PrinterNotifyInfo FindNextPrinterChangeNotification()
         {
-            if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, IntPtr.Zero, IntPtr.Zero))
-            {
-                throw new Win32Exception();
-            }
+            var ppPrinterNotifyInfo = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            var pPrinterNotifyInfo = IntPtr.Zero;
 
-            return change;
+            try
+            {
+                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, IntPtr.Zero, ppPrinterNotifyInfo))
+                {
+                    throw new Win32Exception();
+                }
+
+                pPrinterNotifyInfo = Marshal.ReadIntPtr(ppPrinterNotifyInfo);
+                Console.WriteLine($"pPrinterNotifyInfo: {pPrinterNotifyInfo}");
+
+                return new PrinterNotifyInfo((PRINTER_CHANGE) change, pPrinterNotifyInfo);
+            }
+            finally
+            {
+                if (pPrinterNotifyInfo != IntPtr.Zero)
+                {
+                    NativeMethods.FreePrinterNotifyInfo(pPrinterNotifyInfo);
+                }
+
+                Marshal.FreeHGlobal(ppPrinterNotifyInfo);
+            }
         }
 
 

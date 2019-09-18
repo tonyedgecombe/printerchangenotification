@@ -23,7 +23,7 @@ namespace PrinterChangeNotification
         //);
 
         [DllImport("winspool.drv", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool FindNextPrinterChangeNotification(IntPtr hChange, out UInt32 pdwChange, IntPtr pvReserved, IntPtr ppPrinterNotifyInfo);
+        public static extern bool FindNextPrinterChangeNotification(IntPtr hChange, out UInt32 pdwChange, IntPtr pPrinterNotifyOptions, IntPtr ppPrinterNotifyInfo);
 
         //BOOL WINAPI FreePrinterNotifyInfo(
         //    __in PPRINTER_NOTIFY_INFO pPrinterNotifyInfo
