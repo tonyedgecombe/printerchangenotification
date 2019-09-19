@@ -97,7 +97,7 @@ namespace PrinterChangeNotification
             return size;
         }
 
-        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh = false)
+        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh)
         {
             var ppPrinterNotifyInfo = IntPtr.Zero;
             var pOptions = IntPtr.Zero;
