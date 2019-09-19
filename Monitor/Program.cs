@@ -96,7 +96,7 @@ namespace Monitor
                     var printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification();
                     if ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0)
                     {
-                        throw new NotImplementedException();
+                        throw new NotImplementedException(); // TODO Create an overflow test
                     }
 
                     Console.WriteLine($"Change: {printerNotifyInfo.Change}");
