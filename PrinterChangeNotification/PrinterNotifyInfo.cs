@@ -10,7 +10,7 @@ namespace PrinterChangeNotification
     {
         public PRINTER_CHANGE Change { get; }
 
-        public Dictionary<UInt16, PrinterNotifyInfoData> Data { get; } = new Dictionary<UInt16, PrinterNotifyInfoData>();
+        public List<PrinterNotifyInfoData> Data { get; } = new List<PrinterNotifyInfoData>();
 
         [StructLayout(LayoutKind.Sequential)]
         private struct PRINTER_NOTIFY_INFO
@@ -35,16 +35,11 @@ namespace PrinterChangeNotification
                 for (int i = 0; i < notifyInfo.Count; i++)
                 {
                     var info = new PrinterNotifyInfoData(pos);
-                    Data[info.Field] = info;
+                    Data.Add(info);
 
                     pos += PrinterNotifyInfoData.SizeOf();
                 }
             }
-        }
-
-        public override string ToString()
-        {
-            return $"Change {Change}";
         }
     }
 }

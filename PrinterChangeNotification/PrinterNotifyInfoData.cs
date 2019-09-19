@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using PrinterChangeNotification.enums;
 // ReSharper disable InconsistentNaming
+#pragma warning disable 612
 
 namespace PrinterChangeNotification
 {
@@ -160,79 +161,77 @@ namespace PrinterChangeNotification
                     switch ((JOB_NOTIFY_FIELD)data.Field)
                     {
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_MACHINE_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PORT_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_USER_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_NOTIFY_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DATATYPE:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINT_PROCESSOR:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PARAMETERS:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DRIVER_NAME:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DEVMODE:
-                            // TODO
+                            Value = data.pBuf;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS_STRING:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SECURITY_DESCRIPTOR:
-                            // TODO
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DOCUMENT:
-                            // TODO
+                            Value = Marshal.PtrToStringUni(data.pBuf);
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRIORITY:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_POSITION:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SUBMITTED:
-                            // TODO
+                            Value = data.pBuf;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_START_TIME:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_UNTIL_TIME:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TIME:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PAGES_PRINTED:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_BYTES:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_BYTES_PRINTED:
-                            // TODO
+                            Value = data.adwData0;
                             break;
                         case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_REMOTE_JOB_ID:
-                            // TODO
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

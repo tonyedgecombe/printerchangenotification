@@ -20,7 +20,6 @@ namespace Monitor
                         Fields =
                         {
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
-                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SHARE_NAME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PORT_NAME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DRIVER_NAME,
@@ -38,22 +37,43 @@ namespace Monitor
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_START_TIME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_UNTIL_TIME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_STATUS,
-                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_CJOBS,                 
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_CJOBS,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_AVERAGE_PPM,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_OBJECT_GUID,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_FRIENDLY_NAME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_BRANCH_OFFICE_PRINTING,
                         }
                     },
-                    //new PrinterNotifyOptionsType
-                    //{
-                    //    Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
-                    //    Fields =
-                    //    {
-                    //        (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME,
-                    //        (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES,
-                    //    }
-                    //},
+                    new PrinterNotifyOptionsType
+                    {
+                        Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
+                        Fields =
+                        {
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME                ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_MACHINE_NAME                ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PORT_NAME                   ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_USER_NAME                   ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_NOTIFY_NAME                 ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DATATYPE                    ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINT_PROCESSOR             ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PARAMETERS                  ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DRIVER_NAME                 ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DEVMODE                     ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS                      ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS_STRING               ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DOCUMENT                    ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRIORITY                    ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_POSITION                    ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SUBMITTED                   ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_START_TIME                  ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_UNTIL_TIME                  ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TIME                        ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES                 ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PAGES_PRINTED               ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_BYTES                 ,
+                            (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_BYTES_PRINTED               ,
+                        }
+                    },
                 }
             };
 
@@ -72,16 +92,16 @@ namespace Monitor
                     PrinterNotifyInfo change = printerChangeNotification.FindNextPrinterChangeNotification();
                     Console.WriteLine(change);
 
-                    var printerNotifyData = change.Data.Where(pair => pair.Value.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
-                    foreach (var pair in printerNotifyData)
+                    var printerNotifyData = change.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+                    foreach (var printerNotifyInfoData in printerNotifyData)
                     {
-                        Console.WriteLine($"{(PRINTER_NOTIFY_FIELD)pair.Key} = {pair.Value.Value}");
+                        Console.WriteLine($"{(PRINTER_NOTIFY_FIELD)printerNotifyInfoData.Field} = {printerNotifyInfoData.Value}");
                     }
 
-                    var jobNotifyData = change.Data.Where(pair => pair.Value.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+                    var jobNotifyData = change.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
                     foreach (var pair in jobNotifyData)
                     {
-                        Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Key} = {pair.Value.Value}");
+                        Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Field} = {pair.Value}");
                     }
                 }
             }

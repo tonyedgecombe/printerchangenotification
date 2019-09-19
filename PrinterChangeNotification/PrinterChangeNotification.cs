@@ -31,9 +31,9 @@ namespace PrinterChangeNotification
 
             if (options != null)
             {
-                var size = options.SizeOf();
+                var size = SizeOf(options);
                 hGlobalPtr = Marshal.AllocHGlobal(size);
-                options.ToPtr(hGlobalPtr);
+                ToPtr(hGlobalPtr, options);
             }
 
             try
@@ -51,6 +51,49 @@ namespace PrinterChangeNotification
             {
                 Marshal.FreeHGlobal(hGlobalPtr);
             }
+        }
+
+        private static void ToPtr(IntPtr pos, PrinterNotifyOptions options)
+        {
+            PRINTER_NOTIFY_OPTIONS st;
+            st.Flags = options.Flags;
+            st.Count = (uint) options.Types.Count;
+            st.Version = 2;
+            st.pTypes = pos + Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>();
+
+            Marshal.StructureToPtr(st, pos, false);
+            pos += Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>();
+
+            var fieldsPos = (IntPtr) pos + (options.Types.Count * Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>());
+
+            foreach (var optionsType in options.Types)
+            {
+                PRINTER_NOTIFY_OPTIONS_TYPE str = default;
+                str.Type = (UInt16) optionsType.Type;
+                str.Count = (UInt32) optionsType.Fields.Count;
+                str.pFields = fieldsPos;
+
+                Marshal.StructureToPtr(str, pos, false);
+                pos += Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>();
+
+                foreach (var field in optionsType.Fields)
+                {
+                    Marshal.WriteInt32(fieldsPos, (Int32) field);
+                    fieldsPos += Marshal.SizeOf<Int32>();
+                }
+            }
+        }
+
+        private static int SizeOf(PrinterNotifyOptions options)
+        {
+            var size = Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>();
+            foreach (var printerNotifyOptionsType in options.Types)
+            {
+                size += Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>();
+                size += printerNotifyOptionsType.Fields.Count * Marshal.SizeOf<UInt32>();
+            }
+
+            return size;
         }
 
         public PrinterNotifyInfo FindNextPrinterChangeNotification()
