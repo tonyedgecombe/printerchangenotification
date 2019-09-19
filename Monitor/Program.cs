@@ -84,7 +84,7 @@ namespace Monitor
 
             using (var printer = new Printer(null))
             using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printer, 
-                        PRINTER_CHANGE.PRINTER_CHANGE_ALL,
+                        PRINTER_CHANGE.PRINTER_CHANGE_JOB,
                         PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
                         options))
             using (var waitHandle = printerChangeNotification.WaitHandle)
@@ -110,16 +110,16 @@ namespace Monitor
         {
             Console.WriteLine($"Change: {printerNotifyInfo.Change}");
 
-            var printerNotifyData = printerNotifyInfo.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+            var printerNotifyData = printerNotifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
             foreach (var printerNotifyInfoData in printerNotifyData)
             {
                 Console.WriteLine($"{(PRINTER_NOTIFY_FIELD) printerNotifyInfoData.Field} = {printerNotifyInfoData.Value}");
             }
 
-            var jobNotifyData = printerNotifyInfo.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+            var jobNotifyData = printerNotifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
             foreach (var pair in jobNotifyData)
             {
-                Console.WriteLine($"{(JOB_NOTIFY_FIELD) pair.Field} = {pair.Value}");
+                Console.WriteLine($"{pair.Id}:{(JOB_NOTIFY_FIELD) pair.Field} = {pair.Value}");
             }
 
             Console.WriteLine();

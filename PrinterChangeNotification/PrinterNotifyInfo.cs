@@ -14,14 +14,6 @@ namespace PrinterChangeNotification
 
         public UInt32 Flags { get; }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct PRINTER_NOTIFY_INFO
-        {
-            public readonly UInt32 Version;
-            public readonly UInt32 Flags;
-            public readonly UInt32 Count;
-            private readonly IntPtr aData;
-        }
 
         public PrinterNotifyInfo(PRINTER_CHANGE change, IntPtr ptr)
         {
