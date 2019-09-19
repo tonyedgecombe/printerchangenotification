@@ -12,6 +12,8 @@ namespace PrinterChangeNotification
 
         public List<PrinterNotifyInfoData> Data { get; } = new List<PrinterNotifyInfoData>();
 
+        public UInt32 Flags { get; }
+
         [StructLayout(LayoutKind.Sequential)]
         private struct PRINTER_NOTIFY_INFO
         {
@@ -38,6 +40,8 @@ namespace PrinterChangeNotification
 
                     pos += PrinterNotifyInfoData.SizeOf();
                 }
+
+                Flags = notifyInfo.Flags;
             }
         }
     }

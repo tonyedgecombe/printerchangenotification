@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using PrinterChangeNotification;
 using PrinterChangeNotification.enums;
+// ReSharper disable InconsistentNaming
 
 namespace Monitor
 {
     class Program
     {
+        private const UInt32 PRINTER_NOTIFY_INFO_DISCARDED = 0x01;
+
         static void Main()
         {
+            
             var options = new PrinterNotifyOptions
             {
                 Types = new List<PrinterNotifyOptionsType>
@@ -87,20 +92,29 @@ namespace Monitor
                 while (true)
                 {
                     waitHandle.WaitOne();
-                    PrinterNotifyInfo info = printerChangeNotification.FindNextPrinterChangeNotification();
-                    Console.WriteLine($"Change: {info.Change}");
 
-                    var printerNotifyData = info.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+                    var printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification();
+                    if ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    Console.WriteLine($"Change: {printerNotifyInfo.Change}");
+
+                    var printerNotifyData = printerNotifyInfo.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
                     foreach (var printerNotifyInfoData in printerNotifyData)
                     {
                         Console.WriteLine($"{(PRINTER_NOTIFY_FIELD)printerNotifyInfoData.Field} = {printerNotifyInfoData.Value}");
                     }
 
-                    var jobNotifyData = info.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+                    var jobNotifyData = printerNotifyInfo.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
                     foreach (var pair in jobNotifyData)
                     {
                         Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Field} = {pair.Value}");
                     }
+
+                    Thread.Sleep(10000);
+                    Console.WriteLine();
                 }
             }
         }
