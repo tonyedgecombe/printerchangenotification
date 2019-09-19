@@ -113,7 +113,6 @@ namespace Monitor
                         Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Field} = {pair.Value}");
                     }
 
-                    Thread.Sleep(10000);
                     Console.WriteLine();
                 }
             }
