@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PrinterChangeNotification;
 using PrinterChangeNotification.enums;
 
@@ -19,7 +20,29 @@ namespace Monitor
                         Fields =
                         {
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SHARE_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PORT_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DRIVER_NAME,
                             (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_COMMENT,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_LOCATION,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEVMODE,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SEPFILE,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINT_PROCESSOR,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PARAMETERS,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DATATYPE,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SECURITY_DESCRIPTOR,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_ATTRIBUTES,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRIORITY,              // Priority doesn't seem to be monitored specifically, rather as part of the dev mode
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEFAULT_PRIORITY,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_START_TIME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_UNTIL_TIME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_STATUS,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_CJOBS,                 
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_AVERAGE_PPM,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_OBJECT_GUID,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_FRIENDLY_NAME,
+                            (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_BRANCH_OFFICE_PRINTING,
                         }
                     },
                     //new PrinterNotifyOptionsType
@@ -46,10 +69,20 @@ namespace Monitor
                     Console.WriteLine("\nWaiting");
 
                     waitHandle.WaitOne();
-                    var change = printerChangeNotification.FindNextPrinterChangeNotification();
+                    PrinterNotifyInfo change = printerChangeNotification.FindNextPrinterChangeNotification();
                     Console.WriteLine(change);
 
-                    Console.WriteLine("Notification received");
+                    var printerNotifyData = change.Data.Where(pair => pair.Value.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+                    foreach (var pair in printerNotifyData)
+                    {
+                        Console.WriteLine($"{(PRINTER_NOTIFY_FIELD)pair.Key} = {pair.Value.Value}");
+                    }
+
+                    var jobNotifyData = change.Data.Where(pair => pair.Value.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+                    foreach (var pair in jobNotifyData)
+                    {
+                        Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Key} = {pair.Value.Value}");
+                    }
                 }
             }
         }
