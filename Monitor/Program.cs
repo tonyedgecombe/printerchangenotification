@@ -98,7 +98,7 @@ namespace Monitor
                     do
                     {
                         printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification(refresh);
-                        writeToConsole(printerNotifyInfo);
+                        WriteToConsole(printerNotifyInfo);
 
                         refresh = true; // For next iteration if data overflowed
                     } while ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
@@ -106,7 +106,7 @@ namespace Monitor
             }
         }
 
-        private static void writeToConsole(PrinterNotifyInfo printerNotifyInfo)
+        private static void WriteToConsole(PrinterNotifyInfo printerNotifyInfo)
         {
             Console.WriteLine($"Change: {printerNotifyInfo.Change}");
 
