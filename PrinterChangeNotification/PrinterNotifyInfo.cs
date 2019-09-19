@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using PrinterChangeNotification.enums;
+using PrinterChangeNotification.structs;
+
 // ReSharper disable InconsistentNaming
 
 namespace PrinterChangeNotification

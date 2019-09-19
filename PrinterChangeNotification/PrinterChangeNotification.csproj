@@ -10,8 +10,4 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="structs\" />
-  </ItemGroup>
-
 </Project>

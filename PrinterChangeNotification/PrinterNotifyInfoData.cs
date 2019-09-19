@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using PrinterChangeNotification.enums;
+using PrinterChangeNotification.structs;
+
 // ReSharper disable InconsistentNaming
 #pragma warning disable 612
 

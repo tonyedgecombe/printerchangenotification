@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 // ReSharper disable InconsistentNaming
 
-namespace PrinterChangeNotification
+namespace PrinterChangeNotification.structs
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct PRINTER_NOTIFY_INFO

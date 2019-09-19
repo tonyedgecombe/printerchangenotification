@@ -5,6 +5,8 @@ using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using Monitor;
 using PrinterChangeNotification.enums;
+using PrinterChangeNotification.structs;
+
 // ReSharper disable InconsistentNaming
 
 namespace PrinterChangeNotification
