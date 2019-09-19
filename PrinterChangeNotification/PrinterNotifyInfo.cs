@@ -28,7 +28,6 @@ namespace PrinterChangeNotification
             if (ptr != IntPtr.Zero)
             {
                 var notifyInfo = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO>(ptr);
-                Console.WriteLine($"Notify: Version: {notifyInfo.Version}, Flags: {notifyInfo.Flags}, Count: {notifyInfo.Count}");
 
                 var pos = ptr + 12; // pointer to aData
 

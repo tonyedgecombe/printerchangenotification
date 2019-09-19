@@ -8,6 +8,8 @@ namespace PrinterChangeNotification.enums
     {
         PRINTER_NOTIFY_TYPE = 0x00,
         JOB_NOTIFY_TYPE     = 0x01,
+
+        [Obsolete(message: "Not available", error: true)]
         SERVER_NOTIFY_TYPE  = 0x02,
     }
 }

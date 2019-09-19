@@ -86,19 +86,17 @@ namespace Monitor
             {
                 while (true)
                 {
-                    Console.WriteLine("\nWaiting");
-
                     waitHandle.WaitOne();
-                    PrinterNotifyInfo change = printerChangeNotification.FindNextPrinterChangeNotification();
-                    Console.WriteLine(change);
+                    PrinterNotifyInfo info = printerChangeNotification.FindNextPrinterChangeNotification();
+                    Console.WriteLine($"Change: {info.Change}");
 
-                    var printerNotifyData = change.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+                    var printerNotifyData = info.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
                     foreach (var printerNotifyInfoData in printerNotifyData)
                     {
                         Console.WriteLine($"{(PRINTER_NOTIFY_FIELD)printerNotifyInfoData.Field} = {printerNotifyInfoData.Value}");
                     }
 
-                    var jobNotifyData = change.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+                    var jobNotifyData = info.Data.Where(pair => pair.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
                     foreach (var pair in jobNotifyData)
                     {
                         Console.WriteLine($"{(JOB_NOTIFY_FIELD)pair.Field} = {pair.Value}");

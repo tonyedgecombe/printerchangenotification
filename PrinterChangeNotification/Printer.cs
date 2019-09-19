@@ -10,7 +10,6 @@ namespace Monitor
     {
         public Printer(string printerName) : base(true)
         {
-            Console.WriteLine("Opening printer");
             if (!NativeMethods.OpenPrinter(printerName, out handle, IntPtr.Zero))
             {
                 throw new Win32Exception();
@@ -19,7 +18,6 @@ namespace Monitor
 
         protected override bool ReleaseHandle()
         {
-            Console.WriteLine("Closing printer");
             return NativeMethods.ClosePrinter(handle);
         }
     }

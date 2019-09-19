@@ -25,8 +25,6 @@ namespace PrinterChangeNotification
                                          PRINTER_NOTIFY_CATEGORY category,
                                          PrinterNotifyOptions options) : base(true)
         {
-            Console.WriteLine("Starting monitoring");
-
             var hGlobalPtr = IntPtr.Zero;
 
             if (options != null)
@@ -109,7 +107,6 @@ namespace PrinterChangeNotification
                 }
 
                 pPrinterNotifyInfo = Marshal.ReadIntPtr(ppPrinterNotifyInfo);
-                Console.WriteLine($"pPrinterNotifyInfo: {pPrinterNotifyInfo}");
 
                 return new PrinterNotifyInfo((PRINTER_CHANGE) change, pPrinterNotifyInfo);
             }
@@ -127,7 +124,6 @@ namespace PrinterChangeNotification
 
         protected override bool ReleaseHandle()
         {
-            Console.WriteLine("Ending monitoring");
             return NativeMethods.FindClosePrinterChangeNotification(handle);
         }
     }

@@ -237,8 +237,6 @@ namespace PrinterChangeNotification
                             throw new ArgumentOutOfRangeException();
                     }
                     break;
-                case NOTIFY_TYPE.SERVER_NOTIFY_TYPE:
-                    throw new NotImplementedException("Server notify type in header file but not documented so I haven't implemented it.");
                 default:
                     throw new ArgumentOutOfRangeException();
             }
