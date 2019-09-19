@@ -5,11 +5,14 @@ using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using Monitor;
 using PrinterChangeNotification.enums;
+// ReSharper disable InconsistentNaming
 
 namespace PrinterChangeNotification
 {
     public class PrinterChangeNotification : SafeHandleZeroOrMinusOneIsInvalid
     {
+        public static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
+
         private class PrinterChangeNotificationWaitHandle : WaitHandle
         {
             public PrinterChangeNotificationWaitHandle(IntPtr handle)
@@ -94,14 +97,23 @@ namespace PrinterChangeNotification
             return size;
         }
 
-        public PrinterNotifyInfo FindNextPrinterChangeNotification()
+        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh = false)
         {
-            var ppPrinterNotifyInfo = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            var ppPrinterNotifyInfo = IntPtr.Zero;
+            var pOptions = IntPtr.Zero;
             var pPrinterNotifyInfo = IntPtr.Zero;
 
             try
             {
-                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, IntPtr.Zero, ppPrinterNotifyInfo))
+                ppPrinterNotifyInfo = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+                PRINTER_NOTIFY_OPTIONS options = default;
+                options.Flags = refresh ? PRINTER_NOTIFY_OPTIONS_REFRESH : 0x00;
+
+                pOptions = Marshal.AllocHGlobal(Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>());
+                Marshal.StructureToPtr(options, pOptions, false);
+
+                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, pOptions, ppPrinterNotifyInfo))
                 {
                     throw new Win32Exception();
                 }
@@ -112,12 +124,13 @@ namespace PrinterChangeNotification
             }
             finally
             {
+                Marshal.FreeHGlobal(pOptions);
+                Marshal.FreeHGlobal(ppPrinterNotifyInfo);
+
                 if (pPrinterNotifyInfo != IntPtr.Zero)
                 {
                     NativeMethods.FreePrinterNotifyInfo(pPrinterNotifyInfo);
                 }
-
-                Marshal.FreeHGlobal(ppPrinterNotifyInfo);
             }
         }
 
