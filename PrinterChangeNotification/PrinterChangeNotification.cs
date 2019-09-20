@@ -66,7 +66,7 @@ namespace PrinterChangeNotification
             Marshal.StructureToPtr(st, pos, false);
             pos += Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>();
 
-            var fieldsPos = (IntPtr) pos + (options.Types.Count * Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>());
+            var fieldsPos = pos + (options.Types.Count * Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS_TYPE>());
 
             foreach (var optionsType in options.Types)
             {
