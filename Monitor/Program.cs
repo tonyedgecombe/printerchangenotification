@@ -81,8 +81,7 @@ namespace Monitor
                 }
             };
 
-            using (var printer = new Printer(null))
-            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printer, 
+            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(null, 
                         PRINTER_CHANGE.PRINTER_CHANGE_JOB,
                         PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
                         options))

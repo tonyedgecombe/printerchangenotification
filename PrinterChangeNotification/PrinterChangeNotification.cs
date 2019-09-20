@@ -14,6 +14,10 @@ namespace PrinterChangeNotification
     {
         public static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
+        public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
+
+        private readonly IntPtr _printerHandle;
+
         private class PrinterChangeNotificationWaitHandle : WaitHandle
         {
             public PrinterChangeNotificationWaitHandle(IntPtr handle)
@@ -22,14 +26,17 @@ namespace PrinterChangeNotification
             }
         }
 
-        public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
-
-        public PrinterChangeNotification(Printer printer, 
+        public PrinterChangeNotification(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
                                          PrinterNotifyOptions options) : base(true)
         {
             var hGlobalPtr = IntPtr.Zero;
+
+            if (!NativeMethods.OpenPrinter(printerName, out _printerHandle, IntPtr.Zero))
+            {
+                throw new Win32Exception();
+            }
 
             if (options != null)
             {
@@ -40,7 +47,7 @@ namespace PrinterChangeNotification
 
             try
             {
-                handle = NativeMethods.FindFirstPrinterChangeNotification(printer.DangerousGetHandle(),
+                handle = NativeMethods.FindFirstPrinterChangeNotification(_printerHandle,
                     (UInt32) changes,
                     (UInt32) category,
                     hGlobalPtr);
@@ -138,7 +145,7 @@ namespace PrinterChangeNotification
 
         protected override bool ReleaseHandle()
         {
-            return NativeMethods.FindClosePrinterChangeNotification(handle);
+            return NativeMethods.FindClosePrinterChangeNotification(handle) && NativeMethods.ClosePrinter(_printerHandle);
         }
     }
 }
