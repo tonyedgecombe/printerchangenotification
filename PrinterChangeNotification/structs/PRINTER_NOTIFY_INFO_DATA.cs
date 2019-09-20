@@ -29,6 +29,7 @@ namespace PrinterChangeNotification.structs
         [FieldOffset(12)]
         private readonly UInt32 cbBuf;
 
-        [FieldOffset(16)] public readonly IntPtr pBuf;
+        [FieldOffset(16)]
+        public readonly IntPtr pBuf;
     }
 }
