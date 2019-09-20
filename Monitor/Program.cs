@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using PrinterChangeNotification;
 using PrinterChangeNotification.enums;
 // ReSharper disable InconsistentNaming
