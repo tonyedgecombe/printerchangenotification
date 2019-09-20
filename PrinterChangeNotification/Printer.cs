@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.Win32.SafeHandles;
-using PrinterChangeNotification;
 
-namespace Monitor
+namespace PrinterChangeNotification
 {
     public class Printer : SafeHandleZeroOrMinusOneIsInvalid
     {
