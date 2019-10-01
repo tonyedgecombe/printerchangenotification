@@ -8,23 +8,6 @@ using CommandLine;
 
 namespace Monitor
 {
-    public class Options
-    {
-        [Option('p', "printername", Default = null, Required = false)]
-        public string PrinterName { get; set; }
-
-        [Option('c', "printerchanges", Required = false, Separator = ',', HelpText = "Comma separated list of changes to monitor.")]
-        public IEnumerable<PRINTER_CHANGE> PrinterChanges { get; set; }
-
-        [Option('j', "jobnotifyfields", Required = false, Separator = ',')]
-        public IEnumerable<JOB_NOTIFY_FIELD> JobNotifyFields { get; set; }
-
-        [Option('f', "printernotifyfields", Required = false, Separator = ',')]
-        public IEnumerable<PRINTER_NOTIFY_FIELD> PrinterNotifyFields { get; set; }
-
-        public PRINTER_CHANGE PrinterChange => PrinterChanges.Aggregate((PRINTER_CHANGE) 0, (o, c) => o | c);
-    }
-
     class Program
     {
         private const UInt32 PRINTER_NOTIFY_INFO_DISCARDED = 0x01;
@@ -67,9 +50,9 @@ namespace Monitor
         private static void MonitorPrinter(string printerName, PrinterNotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
             using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printerName,
-                change,
-                PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
-                printerNotifyOptions))
+                    change,
+                    PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
+                    printerNotifyOptions))
             using (var waitHandle = printerChangeNotification.WaitHandle)
             {
                 while (true)
