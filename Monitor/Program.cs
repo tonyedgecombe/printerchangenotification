@@ -12,6 +12,17 @@ namespace Monitor
     {
         [Option('p', "printername", Default = null, Required = false)]
         public string PrinterName { get; set; }
+
+        [Option('c', "printerchanges", Required = false, Separator = ',', HelpText = "Comma separated list of changes to monitor.")]
+        public IEnumerable<PRINTER_CHANGE> PrinterChanges { get; set; }
+
+        [Option('j', "jobnotifyfields", Required = false, Separator = ',')]
+        public IEnumerable<JOB_NOTIFY_FIELD> JobNotifyFields { get; set; }
+
+        [Option('f', "printernotifyfields", Required = false, Separator = ',')]
+        public IEnumerable<PRINTER_NOTIFY_FIELD> PrinterNotifyFields { get; set; }
+
+        public PRINTER_CHANGE PrinterChange => PrinterChanges.Aggregate((PRINTER_CHANGE) 0, (o, c) => o | c);
     }
 
     class Program
@@ -20,84 +31,43 @@ namespace Monitor
 
         static void Main(string[] args)
         {
-           //var printerNotifyOptions = new PrinterNotifyOptions
-           // {
-           //     Types = new List<PrinterNotifyOptionsType>
-           //     {
-           //         //new PrinterNotifyOptionsType
-           //         //{
-           //         //    Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
-           //         //    Fields =
-           //         //    {
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SHARE_NAME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PORT_NAME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DRIVER_NAME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_COMMENT,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_LOCATION,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEVMODE,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SEPFILE,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINT_PROCESSOR,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PARAMETERS,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DATATYPE,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SECURITY_DESCRIPTOR,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_ATTRIBUTES,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRIORITY,              // Priority doesn't seem to be monitored specifically, rather as part of the dev mode
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEFAULT_PRIORITY,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_START_TIME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_UNTIL_TIME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_STATUS,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_CJOBS,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_AVERAGE_PPM,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_OBJECT_GUID,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_FRIENDLY_NAME,
-           //         //        (uint) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_BRANCH_OFFICE_PRINTING,
-           //         //    }
-           //         //},
-           //         new PrinterNotifyOptionsType
-           //         {
-           //             Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
-           //             Fields =
-           //             {
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME                ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_MACHINE_NAME                ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PORT_NAME                   ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_USER_NAME                   ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_NOTIFY_NAME                 ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DATATYPE                    ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINT_PROCESSOR             ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PARAMETERS                  ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DRIVER_NAME                 ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DEVMODE                     ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS                      ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS_STRING               ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DOCUMENT                    ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRIORITY                    ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_POSITION                    ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SUBMITTED                   ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_START_TIME                  ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_UNTIL_TIME                  ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TIME                        ,
-           //                 (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES                 ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PAGES_PRINTED               ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_BYTES                 ,
-           //             //    (uint) JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_BYTES_PRINTED               ,
-           //             }
-           //         },
-           //     }
-           // };
-            Parser.Default
-                    .ParseArguments<Options>(args)
-                    .WithParsed(o =>
+            PrinterNotifyOptions printerNotifyOptions = null;
+
+            Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
+            {
+                if (o.JobNotifyFields.Any() || o.JobNotifyFields.Any())
+                {
+                    printerNotifyOptions = new PrinterNotifyOptions
+                    {
+                        Types = new List<PrinterNotifyOptionsType>()
+                    };
+
+                    if (o.JobNotifyFields.Any())
+                    {
+                        printerNotifyOptions.Types.Add(new PrinterNotifyOptionsType
                         {
-                            MonitorPrinter(o.PrinterName, null);
+                            Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
+                            Fields = o.JobNotifyFields.Cast<UInt32>().ToList(),
                         });
+                    }
+
+                    if (o.PrinterNotifyFields.Any())
+                    {
+                        printerNotifyOptions.Types.Add(new PrinterNotifyOptionsType
+                        {
+                            Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
+                            Fields = o.PrinterNotifyFields.Cast<UInt32>().ToList(),
+                        });
+                    }
+                }
+                MonitorPrinter(o.PrinterName, printerNotifyOptions, o.PrinterChange);
+            });
         }
 
-        private static void MonitorPrinter(string printerName, PrinterNotifyOptions printerNotifyOptions)
+        private static void MonitorPrinter(string printerName, PrinterNotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
             using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printerName,
-                PRINTER_CHANGE.PRINTER_CHANGE_JOB,
+                change,
                 PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
                 printerNotifyOptions))
             using (var waitHandle = printerChangeNotification.WaitHandle)
