@@ -18,14 +18,6 @@ namespace PrinterChangeNotification
 
         private readonly IntPtr _printerHandle;
 
-        private class PrinterChangeNotificationWaitHandle : WaitHandle
-        {
-            public PrinterChangeNotificationWaitHandle(IntPtr handle)
-            {
-                SafeWaitHandle = new SafeWaitHandle(handle, false);
-            }
-        }
-
         public PrinterChangeNotification(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
@@ -59,6 +51,43 @@ namespace PrinterChangeNotification
             finally
             {
                 Marshal.FreeHGlobal(hGlobalPtr);
+            }
+        }
+
+        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh)
+        {
+            var ppPrinterNotifyInfo = IntPtr.Zero;
+            var pOptions = IntPtr.Zero;
+            var pPrinterNotifyInfo = IntPtr.Zero;
+
+            try
+            {
+                ppPrinterNotifyInfo = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+                PRINTER_NOTIFY_OPTIONS options = default;
+                options.Flags = refresh ? PRINTER_NOTIFY_OPTIONS_REFRESH : 0x00;
+
+                pOptions = Marshal.AllocHGlobal(Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>());
+                Marshal.StructureToPtr(options, pOptions, false);
+
+                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, pOptions, ppPrinterNotifyInfo))
+                {
+                    throw new Win32Exception();
+                }
+
+                pPrinterNotifyInfo = Marshal.ReadIntPtr(ppPrinterNotifyInfo);
+
+                return new PrinterNotifyInfo((PRINTER_CHANGE) change, pPrinterNotifyInfo);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(pOptions);
+                Marshal.FreeHGlobal(ppPrinterNotifyInfo);
+
+                if (pPrinterNotifyInfo != IntPtr.Zero)
+                {
+                    NativeMethods.FreePrinterNotifyInfo(pPrinterNotifyInfo);
+                }
             }
         }
 
@@ -103,43 +132,6 @@ namespace PrinterChangeNotification
             }
 
             return size;
-        }
-
-        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh)
-        {
-            var ppPrinterNotifyInfo = IntPtr.Zero;
-            var pOptions = IntPtr.Zero;
-            var pPrinterNotifyInfo = IntPtr.Zero;
-
-            try
-            {
-                ppPrinterNotifyInfo = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
-
-                PRINTER_NOTIFY_OPTIONS options = default;
-                options.Flags = refresh ? PRINTER_NOTIFY_OPTIONS_REFRESH : 0x00;
-
-                pOptions = Marshal.AllocHGlobal(Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>());
-                Marshal.StructureToPtr(options, pOptions, false);
-
-                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, pOptions, ppPrinterNotifyInfo))
-                {
-                    throw new Win32Exception();
-                }
-
-                pPrinterNotifyInfo = Marshal.ReadIntPtr(ppPrinterNotifyInfo);
-
-                return new PrinterNotifyInfo((PRINTER_CHANGE) change, pPrinterNotifyInfo);
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(pOptions);
-                Marshal.FreeHGlobal(ppPrinterNotifyInfo);
-
-                if (pPrinterNotifyInfo != IntPtr.Zero)
-                {
-                    NativeMethods.FreePrinterNotifyInfo(pPrinterNotifyInfo);
-                }
-            }
         }
 
 
