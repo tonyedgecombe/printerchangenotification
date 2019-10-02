@@ -52,14 +52,6 @@ namespace PrinterChangeNotification
             }
         }
 
-        private void OpenPrinter(string printerName)
-        {
-            if (!NativeMethods.OpenPrinter(printerName, out _printerHandle, IntPtr.Zero))
-            {
-                throw new Win32Exception();
-            }
-        }
-
         public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh)
         {
             var ppPrinterNotifyInfo = IntPtr.Zero;
@@ -94,6 +86,14 @@ namespace PrinterChangeNotification
                 {
                     NativeMethods.FreePrinterNotifyInfo(pPrinterNotifyInfo);
                 }
+            }
+        }
+
+        private void OpenPrinter(string printerName)
+        {
+            if (!NativeMethods.OpenPrinter(printerName, out _printerHandle, IntPtr.Zero))
+            {
+                throw new Win32Exception();
             }
         }
 
