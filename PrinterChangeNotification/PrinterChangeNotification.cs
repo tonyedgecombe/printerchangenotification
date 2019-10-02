@@ -13,7 +13,7 @@ namespace PrinterChangeNotification
 {
     public class PrinterChangeNotification : SafeHandleZeroOrMinusOneIsInvalid
     {
-        public static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
+        private static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
         public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
 
