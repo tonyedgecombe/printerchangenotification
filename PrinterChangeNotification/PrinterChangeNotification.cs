@@ -24,23 +24,23 @@ namespace PrinterChangeNotification
                                          PRINTER_NOTIFY_CATEGORY category,
                                          PrinterNotifyOptions options) : base(true)
         {
-            var hGlobalPtr = IntPtr.Zero;
-
             OpenPrinter(printerName);
+
+            var ptrNotifyOptions = IntPtr.Zero;
 
             try
             {
                 if (options != null)
                 {
                     var size = SizeOfNotifyOptions(options);
-                    hGlobalPtr = Marshal.AllocHGlobal(size);
-                    ToPtr(hGlobalPtr, options);
+                    ptrNotifyOptions = Marshal.AllocHGlobal(size);
+                    ToPtr(ptrNotifyOptions, options);
                 }
 
                 handle = NativeMethods.FindFirstPrinterChangeNotification(_printerHandle,
                     (UInt32) changes,
                     (UInt32) category,
-                    hGlobalPtr);
+                    ptrNotifyOptions);
                 if (handle == new IntPtr(-1))
                 {
                     throw new Win32Exception();
@@ -48,7 +48,7 @@ namespace PrinterChangeNotification
             }
             finally
             {
-                Marshal.FreeHGlobal(hGlobalPtr);
+                Marshal.FreeHGlobal(ptrNotifyOptions);
             }
         }
 
