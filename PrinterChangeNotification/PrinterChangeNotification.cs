@@ -347,7 +347,8 @@ namespace PrinterChangeNotification
 
         protected override bool ReleaseHandle()
         {
-            return NativeMethods.FindClosePrinterChangeNotification(handle) && NativeMethods.ClosePrinter(_printerHandle);
+            var closed = NativeMethods.FindClosePrinterChangeNotification(handle);
+            return  NativeMethods.ClosePrinter(_printerHandle) && closed;
         }
     }
 }
