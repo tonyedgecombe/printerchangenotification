@@ -53,11 +53,10 @@ namespace Monitor
                     change,
                     PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
                     printerNotifyOptions))
-            using (var waitHandle = printerChangeNotification.WaitHandle)
             {
                 while (true)
                 {
-                    waitHandle.WaitOne();
+                    printerChangeNotification.WaitOne();
                     PrinterNotifyInfo printerNotifyInfo;
                     bool refresh = false;
 

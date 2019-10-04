@@ -11,14 +11,13 @@ using PrinterChangeNotification.structs;
 
 namespace PrinterChangeNotification
 {
-    public class PrinterChangeNotification : IDisposable
+    public class PrinterChangeNotification : WaitHandle
     {
         private static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
-        public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(_handle);
-
         private IntPtr _printerHandle;
         private readonly IntPtr _handle;
+        private bool disposed;
 
         public PrinterChangeNotification(string printerName, 
                                          PRINTER_CHANGE changes, 
@@ -46,6 +45,9 @@ namespace PrinterChangeNotification
                 {
                     throw new Win32Exception();
                 }
+
+                // Don't let SafeWaitHandle own the handle as it can't close it
+                SafeWaitHandle = new SafeWaitHandle(_handle, false);
             }
             finally
             {
@@ -345,10 +347,23 @@ namespace PrinterChangeNotification
             return size;
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            NativeMethods.FindClosePrinterChangeNotification(_handle);
-            NativeMethods.ClosePrinter(_printerHandle);
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // No managed resources to dispose of.
+                }
+
+                // Dispose of unmanaged resources
+                NativeMethods.FindClosePrinterChangeNotification(_handle);
+                NativeMethods.ClosePrinter(_printerHandle);
+
+                disposed = true;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
