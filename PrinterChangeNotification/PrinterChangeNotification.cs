@@ -11,18 +11,19 @@ using PrinterChangeNotification.structs;
 
 namespace PrinterChangeNotification
 {
-    public class PrinterChangeNotification : SafeHandleZeroOrMinusOneIsInvalid
+    public class PrinterChangeNotification : IDisposable
     {
         private static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
-        public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(handle);
+        public WaitHandle WaitHandle => new PrinterChangeNotificationWaitHandle(_handle);
 
         private IntPtr _printerHandle;
+        private readonly IntPtr _handle;
 
         public PrinterChangeNotification(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
-                                         PrinterNotifyOptions options) : base(true)
+                                         PrinterNotifyOptions options)
         {
             OpenPrinter(printerName);
 
@@ -37,11 +38,11 @@ namespace PrinterChangeNotification
                     ToPtr(ptrNotifyOptions, options);
                 }
 
-                handle = NativeMethods.FindFirstPrinterChangeNotification(_printerHandle,
+                _handle = NativeMethods.FindFirstPrinterChangeNotification(_printerHandle,
                     (UInt32) changes,
                     (UInt32) category,
                     ptrNotifyOptions);
-                if (handle == new IntPtr(-1))
+                if (_handle == new IntPtr(-1))
                 {
                     throw new Win32Exception();
                 }
@@ -68,7 +69,7 @@ namespace PrinterChangeNotification
                 pOptions = Marshal.AllocHGlobal(Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>());
                 Marshal.StructureToPtr(options, pOptions, false);
 
-                if (!NativeMethods.FindNextPrinterChangeNotification(handle, out var change, pOptions, ppPrinterNotifyInfo))
+                if (!NativeMethods.FindNextPrinterChangeNotification(_handle, out var change, pOptions, ppPrinterNotifyInfo))
                 {
                     throw new Win32Exception();
                 }
@@ -344,11 +345,10 @@ namespace PrinterChangeNotification
             return size;
         }
 
-
-        protected override bool ReleaseHandle()
+        public void Dispose()
         {
-            var closed = NativeMethods.FindClosePrinterChangeNotification(handle);
-            return  NativeMethods.ClosePrinter(_printerHandle) && closed;
+            NativeMethods.FindClosePrinterChangeNotification(_handle);
+            NativeMethods.ClosePrinter(_printerHandle);
         }
     }
 }
