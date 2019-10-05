@@ -49,25 +49,24 @@ namespace Monitor
 
         private static void MonitorPrinter(string printerName, PrinterNotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
-            using (var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printerName,
+            using var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printerName,
                     change,
                     PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
-                    printerNotifyOptions))
+                    printerNotifyOptions);
+
+            while (true)
             {
-                while (true)
+                printerChangeNotification.WaitOne();
+                PrinterNotifyInfo printerNotifyInfo;
+                bool refresh = false;
+
+                do
                 {
-                    printerChangeNotification.WaitOne();
-                    PrinterNotifyInfo printerNotifyInfo;
-                    bool refresh = false;
+                    printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification(refresh);
+                    WriteToConsole(printerNotifyInfo);
 
-                    do
-                    {
-                        printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification(refresh);
-                        WriteToConsole(printerNotifyInfo);
-
-                        refresh = true; // For next iteration if data overflowed
-                    } while ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
-                }
+                    refresh = true; // For next iteration if data overflowed
+                } while ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
             }
         }
 
