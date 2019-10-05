@@ -7,11 +7,11 @@ using PrinterChangeNotification.enums;
 
 namespace PrinterChangeNotification
 {
-    public class PrinterNotifyInfo
+    public class NotifyInfo
     {
         public PRINTER_CHANGE Change { get; set; }
 
-        public List<PrinterNotifyInfoData> Data { get; } = new List<PrinterNotifyInfoData>();
+        public List<NotifyInfoData> Data { get; } = new List<NotifyInfoData>();
 
         public UInt32 Flags { get; set; }
     }

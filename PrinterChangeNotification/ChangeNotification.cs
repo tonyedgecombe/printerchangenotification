@@ -11,18 +11,18 @@ using PrinterChangeNotification.structs;
 
 namespace PrinterChangeNotification
 {
-    public class PrinterChangeNotification : WaitHandle
+    public class ChangeNotification : WaitHandle
     {
-        private static UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
+        private static readonly UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
         private IntPtr _printerHandle;
         private readonly IntPtr _handle;
         private bool disposed;
 
-        public PrinterChangeNotification(string printerName, 
+        public ChangeNotification(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
-                                         PrinterNotifyOptions options)
+                                         NotifyOptions options)
         {
             OpenPrinter(printerName);
 
@@ -55,7 +55,7 @@ namespace PrinterChangeNotification
             }
         }
 
-        public PrinterNotifyInfo FindNextPrinterChangeNotification(bool refresh)
+        public NotifyInfo FindNextPrinterChangeNotification(bool refresh)
         {
             var ppPrinterNotifyInfo = IntPtr.Zero;
             var pOptions = IntPtr.Zero;
@@ -100,9 +100,9 @@ namespace PrinterChangeNotification
             }
         }
 
-        private static PrinterNotifyInfo CreatePrinterNotifyInfo(uint change, IntPtr ptr)
+        private static NotifyInfo CreatePrinterNotifyInfo(uint change, IntPtr ptr)
         {
-            var result = new PrinterNotifyInfo
+            var result = new NotifyInfo
             {
                 Change = (PRINTER_CHANGE) change
             };
@@ -129,16 +129,16 @@ namespace PrinterChangeNotification
             return result;
         }
 
-        private static PrinterNotifyInfoData CreatePrinterNotifyInfoData(IntPtr ptr)
+        private static NotifyInfoData CreatePrinterNotifyInfoData(IntPtr ptr)
         {
             if (ptr == IntPtr.Zero)
             {
-                return new PrinterNotifyInfoData();
+                return new NotifyInfoData();
             }
 
             var data = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_DATA>(ptr);
 
-            return new PrinterNotifyInfoData
+            return new NotifyInfoData
             {
                 Type = data.Type,
                 Field = data.Field,
@@ -304,7 +304,7 @@ namespace PrinterChangeNotification
         }
 
 
-        private static void ToPtr(IntPtr pos, PrinterNotifyOptions options)
+        private static void ToPtr(IntPtr pos, NotifyOptions options)
         {
             PRINTER_NOTIFY_OPTIONS st;
             st.Flags = options.Flags;
@@ -335,7 +335,7 @@ namespace PrinterChangeNotification
             }
         }
 
-        private static int SizeOfNotifyOptions(PrinterNotifyOptions options)
+        private static int SizeOfNotifyOptions(NotifyOptions options)
         {
             var size = Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>();
             foreach (var printerNotifyOptionsType in options.Types)

@@ -14,20 +14,20 @@ namespace Monitor
 
         static void Main(string[] args)
         {
-            PrinterNotifyOptions printerNotifyOptions = null;
+            NotifyOptions notifyOptions = null;
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
                 if (o.JobNotifyFields.Any() || o.JobNotifyFields.Any())
                 {
-                    printerNotifyOptions = new PrinterNotifyOptions
+                    notifyOptions = new NotifyOptions
                     {
-                        Types = new List<PrinterNotifyOptionsType>()
+                        Types = new List<NotifyOptionsType>()
                     };
 
                     if (o.JobNotifyFields.Any())
                     {
-                        printerNotifyOptions.Types.Add(new PrinterNotifyOptionsType
+                        notifyOptions.Types.Add(new NotifyOptionsType
                         {
                             Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
                             Fields = o.JobNotifyFields.Cast<UInt32>().ToList(),
@@ -36,51 +36,51 @@ namespace Monitor
 
                     if (o.PrinterNotifyFields.Any())
                     {
-                        printerNotifyOptions.Types.Add(new PrinterNotifyOptionsType
+                        notifyOptions.Types.Add(new NotifyOptionsType
                         {
                             Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
                             Fields = o.PrinterNotifyFields.Cast<UInt32>().ToList(),
                         });
                     }
                 }
-                MonitorPrinter(o.PrinterName, printerNotifyOptions, o.PrinterChange);
+                MonitorPrinter(o.PrinterName, notifyOptions, o.PrinterChange);
             });
         }
 
-        private static void MonitorPrinter(string printerName, PrinterNotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
+        private static void MonitorPrinter(string printerName, NotifyOptions notifyOptions, PRINTER_CHANGE change)
         {
-            using var printerChangeNotification = new PrinterChangeNotification.PrinterChangeNotification(printerName,
-                    change,
-                    PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
-                    printerNotifyOptions);
+            using var changeNotification = new ChangeNotification(printerName,
+                                            change,
+                                            PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
+                                            notifyOptions);
 
             while (true)
             {
-                printerChangeNotification.WaitOne();
-                PrinterNotifyInfo printerNotifyInfo;
+                changeNotification.WaitOne();
+                NotifyInfo notifyInfo;
                 bool refresh = false;
 
                 do
                 {
-                    printerNotifyInfo = printerChangeNotification.FindNextPrinterChangeNotification(refresh);
-                    WriteToConsole(printerNotifyInfo);
+                    notifyInfo = changeNotification.FindNextPrinterChangeNotification(refresh);
+                    WriteToConsole(notifyInfo);
 
                     refresh = true; // For next iteration if data overflowed
-                } while ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
+                } while ((notifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
             }
         }
 
-        private static void WriteToConsole(PrinterNotifyInfo printerNotifyInfo)
+        private static void WriteToConsole(NotifyInfo notifyInfo)
         {
-            Console.WriteLine($"Change: {printerNotifyInfo.Change}");
+            Console.WriteLine($"Change: {notifyInfo.Change}");
 
-            var printerNotifyData = printerNotifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
+            var printerNotifyData = notifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.PRINTER_NOTIFY_TYPE);
             foreach (var printerNotifyInfoData in printerNotifyData)
             {
                 Console.WriteLine($"{(PRINTER_NOTIFY_FIELD) printerNotifyInfoData.Field} = {printerNotifyInfoData.Value}");
             }
 
-            var jobNotifyData = printerNotifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
+            var jobNotifyData = notifyInfo.Data.Where(data => data.Type == (int) NOTIFY_TYPE.JOB_NOTIFY_TYPE);
             foreach (var pair in jobNotifyData)
             {
                 Console.WriteLine($"{pair.Id}:{(JOB_NOTIFY_FIELD) pair.Field} = {pair.Value}");

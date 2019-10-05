@@ -4,7 +4,7 @@
 
 namespace PrinterChangeNotification
 {
-    public struct PrinterNotifyInfoData
+    public struct NotifyInfoData
     {
         public UInt16 Type { get; set; }
         public UInt16 Field { get; set; }
