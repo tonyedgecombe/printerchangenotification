@@ -16,15 +16,22 @@ namespace PrinterChangeNotification
         private static readonly UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
         private IntPtr _printerHandle;
-        private readonly IntPtr _handle;
+        private IntPtr _handle;
         private bool disposed;
 
-        public ChangeNotification(string printerName, 
+        private ChangeNotification()
+        {
+        }
+
+        public static IChangeNotification Create(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
                                          NotifyOptions options)
         {
-            OpenPrinter(printerName);
+            var notification = new ChangeNotification
+            {
+                _printerHandle = OpenPrinter(printerName)
+            };
 
             var ptrNotifyOptions = IntPtr.Zero;
 
@@ -37,22 +44,24 @@ namespace PrinterChangeNotification
                     ToPtr(ptrNotifyOptions, options);
                 }
 
-                _handle = NativeMethods.FindFirstPrinterChangeNotification(_printerHandle,
+                notification._handle = NativeMethods.FindFirstPrinterChangeNotification(notification._printerHandle,
                     (UInt32) changes,
                     (UInt32) category,
                     ptrNotifyOptions);
-                if (_handle == new IntPtr(-1))
+                if (notification._handle == new IntPtr(-1))
                 {
                     throw new Win32Exception();
                 }
 
                 // Don't let SafeWaitHandle own the handle as it can't close it
-                SafeWaitHandle = new SafeWaitHandle(_handle, false);
+                notification.SafeWaitHandle = new SafeWaitHandle(notification._handle, false);
             }
             finally
             {
                 Marshal.FreeHGlobal(ptrNotifyOptions);
             }
+
+            return notification;
         }
 
         public NotifyInfo FindNextPrinterChangeNotification(bool refresh)
@@ -92,12 +101,14 @@ namespace PrinterChangeNotification
             }
         }
 
-        private void OpenPrinter(string printerName)
+        private static IntPtr OpenPrinter(string printerName)
         {
-            if (!NativeMethods.OpenPrinter(printerName, out _printerHandle, IntPtr.Zero))
+            if (!NativeMethods.OpenPrinter(printerName, out var printerHandle, IntPtr.Zero))
             {
                 throw new Win32Exception();
             }
+
+            return printerHandle;
         }
 
         private static NotifyInfo CreatePrinterNotifyInfo(uint change, IntPtr ptr)

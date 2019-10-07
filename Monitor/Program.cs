@@ -10,8 +10,6 @@ namespace Monitor
 {
     class Program
     {
-        private const UInt32 PRINTER_NOTIFY_INFO_DISCARDED = 0x01;
-
         static void Main(string[] args)
         {
             NotifyOptions printerNotifyOptions = null;
@@ -49,10 +47,10 @@ namespace Monitor
 
         private static void MonitorPrinter(string printerName, NotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
-            using IChangeNotification printerChangeNotification = new ChangeNotification(printerName,
-                change,
-                PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
-                printerNotifyOptions);
+            using var printerChangeNotification = ChangeNotification.Create(printerName,
+                                                change,
+                                                PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
+                                                printerNotifyOptions);
             
             while (true)
             {
@@ -66,7 +64,7 @@ namespace Monitor
                     WriteToConsole(printerNotifyInfo);
 
                     refresh = true; // For next iteration if data overflowed
-                } while ((printerNotifyInfo.Flags & PRINTER_NOTIFY_INFO_DISCARDED) != 0);
+                } while ((printerNotifyInfo.Flags & NotifyInfo.PRINTER_NOTIFY_INFO_DISCARDED) != 0);
             }
         }
 
