@@ -49,7 +49,7 @@ namespace Monitor
 
         private static void MonitorPrinter(string printerName, NotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
-            using var printerChangeNotification = new ChangeNotification(printerName,
+            using IChangeNotification printerChangeNotification = new ChangeNotification(printerName,
                 change,
                 PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
                 printerNotifyOptions);

@@ -11,7 +11,7 @@ using PrinterChangeNotification.structs;
 
 namespace PrinterChangeNotification
 {
-    public class ChangeNotification : WaitHandle
+    public class ChangeNotification : WaitHandle, IChangeNotification
     {
         private static readonly UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
