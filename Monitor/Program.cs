@@ -12,11 +12,23 @@ namespace Monitor
     {
         static void Main(string[] args)
         {
+            try
+            {
+                Monitor(args);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private static void Monitor(IEnumerable<string> args)
+        {
             NotifyOptions printerNotifyOptions = null;
 
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
             {
-                if (o.JobNotifyFields.Any() || o.JobNotifyFields.Any())
+                if (o.JobNotifyFields.Any() || o.PrinterNotifyFields.Any())
                 {
                     printerNotifyOptions = new NotifyOptions
                     {
@@ -41,12 +53,18 @@ namespace Monitor
                         });
                     }
                 }
+
                 MonitorPrinter(o.PrinterName, printerNotifyOptions, o.PrinterChange);
             });
         }
 
         private static void MonitorPrinter(string printerName, NotifyOptions printerNotifyOptions, PRINTER_CHANGE change)
         {
+            if (printerNotifyOptions == null && change == 0)
+            {
+                throw new Exception("Either or both of printer changes or fields to monitor must be set.");
+            }
+
             using var printerChangeNotification = ChangeNotification.Create(printerName,
                                                 change,
                                                 PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
