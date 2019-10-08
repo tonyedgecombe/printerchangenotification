@@ -11,6 +11,9 @@
     <Description>A thin .Net wrapper around the win32 printer change notification API.</Description>
     <Copyright>Frogmore Computer Services Ltd</Copyright>
     <Version>1.0.0</Version>
+    <PackageId>frogmore.printerchangenotification</PackageId>
+    <PackageTags>win32 printer notification winspool.h</PackageTags>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
