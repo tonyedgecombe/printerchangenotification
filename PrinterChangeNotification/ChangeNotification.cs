@@ -25,6 +25,11 @@ namespace PrinterChangeNotification
         {
         }
 
+        public static IChangeNotification Create(PRINTER_CHANGE changes)
+        {
+            return Create(null, changes, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, null);
+        }
+
         public static IChangeNotification Create(string printerName, 
                                          PRINTER_CHANGE changes, 
                                          PRINTER_NOTIFY_CATEGORY category,
