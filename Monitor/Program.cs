@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using PrinterChangeNotification;
 using PrinterChangeNotification.enums;
 using CommandLine;
@@ -72,7 +73,7 @@ namespace Monitor
             
             while (true)
             {
-                printerChangeNotification.WaitOne();
+                ((WaitHandle)printerChangeNotification).WaitOne();
                 NotifyInfo printerNotifyInfo;
                 bool refresh = false;
 

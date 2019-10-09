@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading;
 
 namespace PrinterChangeNotification
 {
     public interface IChangeNotification : IDisposable
     {
-        bool WaitOne();
+        WaitHandle WaitHandle { get; }
         NotifyInfo FindNextPrinterChangeNotification(bool refresh);
     }
 }

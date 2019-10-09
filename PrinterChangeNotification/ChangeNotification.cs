@@ -16,8 +16,10 @@ namespace PrinterChangeNotification
         private static readonly UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
 
         private IntPtr _printerHandle;
-        private IntPtr _handle;
+        private IntPtr _changeHandle;
         private bool disposed;
+
+        public WaitHandle WaitHandle => this;
 
         private ChangeNotification()
         {
@@ -44,17 +46,17 @@ namespace PrinterChangeNotification
                     ToPtr(ptrNotifyOptions, options);
                 }
 
-                notification._handle = NativeMethods.FindFirstPrinterChangeNotification(notification._printerHandle,
+                notification._changeHandle = NativeMethods.FindFirstPrinterChangeNotification(notification._printerHandle,
                     (UInt32) changes,
                     (UInt32) category,
                     ptrNotifyOptions);
-                if (notification._handle == new IntPtr(-1))
+                if (notification._changeHandle == new IntPtr(-1))
                 {
                     throw new Win32Exception();
                 }
 
                 // Don't let SafeWaitHandle own the handle as it can't close it
-                notification.SafeWaitHandle = new SafeWaitHandle(notification._handle, false);
+                notification.SafeWaitHandle = new SafeWaitHandle(notification._changeHandle, false);
             }
             finally
             {
@@ -80,7 +82,7 @@ namespace PrinterChangeNotification
                 pOptions = Marshal.AllocHGlobal(Marshal.SizeOf<PRINTER_NOTIFY_OPTIONS>());
                 Marshal.StructureToPtr(options, pOptions, false);
 
-                if (!NativeMethods.FindNextPrinterChangeNotification(_handle, out var change, pOptions, ppPrinterNotifyInfo))
+                if (!NativeMethods.FindNextPrinterChangeNotification(_changeHandle, out var change, pOptions, ppPrinterNotifyInfo))
                 {
                     throw new Win32Exception();
                 }
@@ -368,7 +370,7 @@ namespace PrinterChangeNotification
                 }
 
                 // Dispose of unmanaged resources
-                NativeMethods.FindClosePrinterChangeNotification(_handle);
+                NativeMethods.FindClosePrinterChangeNotification(_changeHandle);
                 NativeMethods.ClosePrinter(_printerHandle);
 
                 disposed = true;
