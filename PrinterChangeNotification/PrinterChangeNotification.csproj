@@ -5,12 +5,12 @@
     <Authors>Tony Edgecombe</Authors>
     <Company>Frogmore Computer Services Ltd</Company>
     <Product>Printer Change Notification</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <FileVersion>0.0.1.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>A thin .Net wrapper around the win32 printer change notification API.</Description>
     <Copyright>Frogmore Computer Services Ltd</Copyright>
-    <Version>1.0.0</Version>
+    <Version>0.0.1</Version>
     <PackageId>frogmore.printerchangenotification</PackageId>
     <PackageTags>win32 printer notification winspool.h</PackageTags>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
