@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 namespace PrinterChangeNotification.structs
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct PRINTER_NOTIFY_INFO
+    public struct PRINTER_NOTIFY_INFO_32
     {
         public readonly UInt32 Version;
         public readonly UInt32 Flags;
         public readonly UInt32 Count;
-        private readonly IntPtr aData;
+        private readonly PRINTER_NOTIFY_INFO_DATA_32 aData;
     }
 }

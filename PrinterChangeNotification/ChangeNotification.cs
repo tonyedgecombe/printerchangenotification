@@ -120,6 +120,13 @@ namespace PrinterChangeNotification
 
         private static NotifyInfo CreatePrinterNotifyInfo(uint change, IntPtr ptr)
         {
+            return Environment.Is64BitProcess ?
+                CreatePrinterNotifyInfo64(change, ptr):
+                CreatePrinterNotifyInfo32(change, ptr);
+        }
+
+        private static NotifyInfo CreatePrinterNotifyInfo32(uint change, IntPtr ptr)
+        {
             var result = new NotifyInfo
             {
                 Change = (PRINTER_CHANGE) change
@@ -130,7 +137,7 @@ namespace PrinterChangeNotification
                 return result;
             }
 
-            var notifyInfo = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO>(ptr);
+            var notifyInfo = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_32>(ptr);
 
             var pos = ptr + 12; // pointer to aData
 
@@ -139,7 +146,35 @@ namespace PrinterChangeNotification
                 var info = CreatePrinterNotifyInfoData(pos);
                 result.Data.Add(info);
 
-                pos += Marshal.SizeOf<PRINTER_NOTIFY_INFO_DATA>();
+                pos += Marshal.SizeOf<PRINTER_NOTIFY_INFO_DATA_32>();
+            }
+
+            result.Flags = notifyInfo.Flags;
+
+            return result;
+        }
+        private static NotifyInfo CreatePrinterNotifyInfo64(uint change, IntPtr ptr)
+        {
+            var result = new NotifyInfo
+            {
+                Change = (PRINTER_CHANGE) change
+            };
+
+            if (ptr == IntPtr.Zero)
+            {
+                return result;
+            }
+
+            var notifyInfo = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_64>(ptr);
+
+            var pos = ptr + 16; // pointer to aData
+
+            for (int i = 0; i < notifyInfo.Count; i++)
+            {
+                var info = CreatePrinterNotifyInfoData(pos);
+                result.Data.Add(info);
+
+                pos += Marshal.SizeOf<PRINTER_NOTIFY_INFO_DATA_64>();
             }
 
             result.Flags = notifyInfo.Flags;
@@ -149,12 +184,17 @@ namespace PrinterChangeNotification
 
         private static NotifyInfoData CreatePrinterNotifyInfoData(IntPtr ptr)
         {
+            return Environment.Is64BitProcess ? CreatePrinterNotifyInfoData64(ptr) : CreatePrinterNotifyInfoData32(ptr);
+        }
+
+        private static NotifyInfoData CreatePrinterNotifyInfoData32(IntPtr ptr)
+        {
             if (ptr == IntPtr.Zero)
             {
                 return new NotifyInfoData();
             }
 
-            var data = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_DATA>(ptr);
+            var data = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_DATA_32>(ptr);
 
             return new NotifyInfoData
             {
@@ -165,7 +205,25 @@ namespace PrinterChangeNotification
             };
         }
 
-        private static dynamic GetNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA data)
+        private static NotifyInfoData CreatePrinterNotifyInfoData64(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero)
+            {
+                return new NotifyInfoData();
+            }
+
+            var data = Marshal.PtrToStructure<PRINTER_NOTIFY_INFO_DATA_64>(ptr);
+
+            return new NotifyInfoData
+            {
+                Type = data.Type,
+                Field = data.Field,
+                Id = data.Id,
+                Value = GetNotifyFieldValue(data),
+            };
+        }
+
+        private static dynamic GetNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_32 data)
         {
             switch ((NOTIFY_TYPE)data.Type)
             {
@@ -178,7 +236,20 @@ namespace PrinterChangeNotification
             }
         }
 
-        private static dynamic GetJobNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA data)
+        private static dynamic GetNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_64 data)
+        {
+            switch ((NOTIFY_TYPE)data.Type)
+            {
+                case NOTIFY_TYPE.PRINTER_NOTIFY_TYPE:
+                    return GetPrinterNotifyFieldValue(data);
+                case NOTIFY_TYPE.JOB_NOTIFY_TYPE:
+                    return GetJobNotifyFieldValue(data);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static dynamic GetJobNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_32 data)
         {
             switch ((JOB_NOTIFY_FIELD)data.Field)
             {
@@ -239,7 +310,150 @@ namespace PrinterChangeNotification
             return null;
         }
 
-        private static dynamic GetPrinterNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA data)
+        private static dynamic GetJobNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_64 data)
+        {
+            switch ((JOB_NOTIFY_FIELD)data.Field)
+            {
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINTER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_MACHINE_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PORT_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_USER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_NOTIFY_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DATATYPE:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRINT_PROCESSOR:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PARAMETERS:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DRIVER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DEVMODE:
+                    return data.pBuf;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_STATUS_STRING:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SECURITY_DESCRIPTOR:
+                    break;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_DOCUMENT:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PRIORITY:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_POSITION:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_SUBMITTED:
+                    return data.pBuf;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_START_TIME:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_UNTIL_TIME:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TIME:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_PAGES:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_PAGES_PRINTED:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_TOTAL_BYTES:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_BYTES_PRINTED:
+                    return data.adwData0;
+                case JOB_NOTIFY_FIELD.JOB_NOTIFY_FIELD_REMOTE_JOB_ID:
+                    break;
+                default:
+                    return null;
+            }
+
+            return null;
+        }
+
+        private static dynamic GetPrinterNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_32 data)
+        {
+            switch ((PRINTER_NOTIFY_FIELD)data.Field)
+            {
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SERVER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINTER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SHARE_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PORT_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DRIVER_NAME:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_COMMENT:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_LOCATION:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEVMODE:
+                    return data.pBuf;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SEPFILE:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRINT_PROCESSOR:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PARAMETERS:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DATATYPE:
+                    return Marshal.PtrToStringUni(data.pBuf);
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_SECURITY_DESCRIPTOR:
+                    return data.pBuf;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_ATTRIBUTES:
+                    return data.adwData0;
+
+                // In my tests although priority is monitored it's value isn't available via this field
+                // It should be possible to pick it up in the devmode though.
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRIORITY:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_DEFAULT_PRIORITY:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_START_TIME:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_UNTIL_TIME:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_STATUS:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_STATUS_STRING:
+                    // Not supported
+                    break;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_CJOBS:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_AVERAGE_PPM:
+                    return data.adwData0;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_TOTAL_PAGES:
+                    // Not supported
+                    break;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PAGES_PRINTED:
+                    // Not supported
+                    break;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_TOTAL_BYTES:
+                    // Not supported
+                    break;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_BYTES_PRINTED:
+                    // Not supported
+                    break;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_OBJECT_GUID:
+                    // Not particularly well documented
+                    return true;
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_FRIENDLY_NAME:
+                    // Windows Vista and later
+                    // Not particularly well documented
+                    return true; // Probably should be a string
+                case PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_BRANCH_OFFICE_PRINTING:
+                    // Windows 8 and later
+                    // Not documented at all
+                    break;
+                default:
+                    return null;
+            }
+
+            return null;
+        }
+
+        private static dynamic GetPrinterNotifyFieldValue(PRINTER_NOTIFY_INFO_DATA_64 data)
         {
             switch ((PRINTER_NOTIFY_FIELD)data.Field)
             {
