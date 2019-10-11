@@ -561,8 +561,8 @@ namespace PrinterChangeNotification
 
                 foreach (var field in optionsType.Fields)
                 {
-                    Marshal.WriteInt32(fieldsPos, (Int32) field);
-                    fieldsPos += Marshal.SizeOf<Int32>();
+                    Marshal.WriteInt32(fieldsPos, field);
+                    fieldsPos += Marshal.SizeOf(field.GetType());
                 }
             }
         }

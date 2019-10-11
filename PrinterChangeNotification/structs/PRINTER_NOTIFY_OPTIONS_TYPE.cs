@@ -13,6 +13,6 @@ namespace PrinterChangeNotification.structs
         public UInt32 Reserved1;
         public UInt32 Reserved2;
         public UInt32 Count;
-        public IntPtr pFields; // *DWORD
+        public IntPtr pFields; // *WORD
     }
 }

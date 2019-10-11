@@ -41,7 +41,7 @@ namespace Monitor
                         printerNotifyOptions.Types.Add(new NotifyOptionsType
                         {
                             Type = NOTIFY_TYPE.JOB_NOTIFY_TYPE,
-                            Fields = o.JobNotifyFields.Cast<UInt32>().ToList(),
+                            Fields = o.JobNotifyFields.Cast<UInt16>().ToList(),
                         });
                     }
 
@@ -50,7 +50,7 @@ namespace Monitor
                         printerNotifyOptions.Types.Add(new NotifyOptionsType
                         {
                             Type = NOTIFY_TYPE.PRINTER_NOTIFY_TYPE,
-                            Fields = o.PrinterNotifyFields.Cast<UInt32>().ToList(),
+                            Fields = o.PrinterNotifyFields.Cast<UInt16>().ToList(),
                         });
                     }
                 }

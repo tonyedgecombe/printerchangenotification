@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace PrinterChangeNotification.enums
 {
     [SuppressMessage("ReSharper", "IdentifierTypo")]
-    public enum PRINTER_NOTIFY_FIELD : UInt32
+    public enum PRINTER_NOTIFY_FIELD : UInt16
 
     {
         [Obsolete] PRINTER_NOTIFY_FIELD_SERVER_NAME         = 0x00, // Not supported according to the docs
