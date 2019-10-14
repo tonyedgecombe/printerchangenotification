@@ -73,7 +73,7 @@ namespace Monitor
             
             while (true)
             {
-                ((WaitHandle)printerChangeNotification).WaitOne();
+                printerChangeNotification.WaitHandle.WaitOne();
                 NotifyInfo printerNotifyInfo;
                 bool refresh = false;
 
