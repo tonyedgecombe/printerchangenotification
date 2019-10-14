@@ -14,9 +14,10 @@ namespace PrinterChangeNotification
     public class ChangeNotification : WaitHandle, IChangeNotification
     {
         private static readonly UInt32 PRINTER_NOTIFY_OPTIONS_REFRESH = 0x01;
+        private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
-        private IntPtr _printerHandle;
-        private IntPtr _changeHandle;
+        private IntPtr _printerHandle = IntPtr.Zero;
+        private IntPtr _changeHandle = INVALID_HANDLE_VALUE;
         private bool disposed;
 
         public WaitHandle WaitHandle => this;
@@ -55,7 +56,7 @@ namespace PrinterChangeNotification
                     (UInt32) changes,
                     (UInt32) category,
                     ptrNotifyOptions);
-                if (notification._changeHandle == new IntPtr(-1))
+                if (notification._changeHandle == INVALID_HANDLE_VALUE)
                 {
                     throw new Win32Exception();
                 }
@@ -589,8 +590,15 @@ namespace PrinterChangeNotification
                 }
 
                 // Dispose of unmanaged resources
-                NativeMethods.FindClosePrinterChangeNotification(_changeHandle);
-                NativeMethods.ClosePrinter(_printerHandle);
+                if (_changeHandle != INVALID_HANDLE_VALUE)
+                {
+                    NativeMethods.FindClosePrinterChangeNotification(_changeHandle);
+                }
+
+                if (_printerHandle != IntPtr.Zero)
+                {
+                    NativeMethods.ClosePrinter(_printerHandle);
+                }
 
                 disposed = true;
             }
