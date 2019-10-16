@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using PrinterChangeNotification.structs;
@@ -9,12 +8,6 @@ namespace Tests
     [TestFixture]
     public class StructSizes
     {
-        [SetUp]
-        public void SetUp()
-        {
-            Debug.Print(Environment.Is64BitProcess ? "64 Bit" : "32 Bit");
-        }
-
         [Test]
         public void IntPtr()
         {
