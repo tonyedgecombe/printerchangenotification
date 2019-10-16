@@ -48,6 +48,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NameConstants.cs" />
+    <Compile Include="Support\NativeMethods.cs" />
+    <Compile Include="Support\PORT_INFO_1.cs" />
+    <Compile Include="Support\PrinterEnumFlags.cs" />
+    <Compile Include="Support\PRINTER_DEFAULTS.cs" />
+    <Compile Include="Support\PRINTER_INFO_2.cs" />
+    <Compile Include="Support\SafePrinter.cs" />
+    <Compile Include="SetUpFixture.cs" />
     <Compile Include="StructSizes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +68,7 @@
       <Name>PrinterChangeNotification</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
