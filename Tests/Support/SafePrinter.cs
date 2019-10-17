@@ -96,7 +96,14 @@ namespace Tests.Support
                     throw new Win32Exception();
                 }
 
-                return Marshal.PtrToStructure<PRINTER_INFO_2>(address);
+                var result = Marshal.PtrToStructure<PRINTER_INFO_2>(address);
+
+                // TODO Marshalling of PRINTER_INFO_2 pointers
+                // In the mean time for this application we don't need them.
+                result.pSecurityDescriptor = IntPtr.Zero;
+                result.pDevMode = IntPtr.Zero;
+
+                return result;
             }
             finally
             {

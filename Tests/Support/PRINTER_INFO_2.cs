@@ -6,11 +6,11 @@ namespace Tests.Support
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct PRINTER_INFO_2
     {
-        [MarshalAs(UnmanagedType.LPTStr)] private string pServerName;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pServerName;
 
         [MarshalAs(UnmanagedType.LPTStr)] public string pPrinterName;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pShareName;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pShareName;
 
         [MarshalAs(UnmanagedType.LPTStr)] public string pPortName;
 
@@ -18,17 +18,17 @@ namespace Tests.Support
 
         [MarshalAs(UnmanagedType.LPTStr)] public string pComment;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pLocation;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pLocation;
 
         public IntPtr pDevMode;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pSepFile;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pSepFile;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pPrintProcessor;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pPrintProcessor;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pDatatype;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pDatatype;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pParameters;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pParameters;
 
         public IntPtr pSecurityDescriptor;
 
