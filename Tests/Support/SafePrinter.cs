@@ -75,6 +75,56 @@ namespace Tests.Support
             Debug.WriteLine($"Port '{portName}' deleted.");
         }
 
+        public PRINTER_INFO_2 GetPrinter()
+        {
+            if (NativeMethods.GetPrinter(handle, 2, IntPtr.Zero, 0, out var cbNeeded) != 0)
+            {
+                throw new ApplicationException("Unexpected success in GetPrinter");
+            }
+
+            //ERROR_INSUFFICIENT_BUFFER = 122 expected, if not -> Exception
+            if (Marshal.GetLastWin32Error() != 122)
+            {
+                throw new Win32Exception();
+            }
+
+            var address = Marshal.AllocHGlobal(cbNeeded);
+            try
+            {
+                if (NativeMethods.GetPrinter(handle, 2, address, cbNeeded, out cbNeeded) == 0)
+                {
+                    throw new Win32Exception();
+                }
+
+                return Marshal.PtrToStructure<PRINTER_INFO_2>(address);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(address);
+            }
+        }
+
+        public void SetPrinter(PRINTER_INFO_2 printerInfo2, int command)
+        {
+            var size = Marshal.SizeOf<PRINTER_INFO_2>();
+            var address = Marshal.AllocHGlobal(size);
+
+            try
+            {
+                Marshal.StructureToPtr(printerInfo2, address, false);
+
+                if (NativeMethods.SetPrinter(handle, 2, address, command) == 0)
+                {
+                    throw new Win32Exception();
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(address);
+            }
+        }
+
+
         public static IEnumerable<PRINTER_INFO_2> EnumPrinters()
         {
             uint needed = 0;

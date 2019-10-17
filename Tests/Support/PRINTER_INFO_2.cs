@@ -16,7 +16,7 @@ namespace Tests.Support
 
         [MarshalAs(UnmanagedType.LPTStr)] public string pDriverName;
 
-        [MarshalAs(UnmanagedType.LPTStr)] private string pComment;
+        [MarshalAs(UnmanagedType.LPTStr)] public string pComment;
 
         [MarshalAs(UnmanagedType.LPTStr)] private string pLocation;
 

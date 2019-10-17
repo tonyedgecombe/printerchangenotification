@@ -28,5 +28,11 @@ namespace Tests.Support
 
         [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int EnumPrinters(PrinterEnumFlags flags, string name, uint level, IntPtr pPrinterEnum, uint cbBuf, ref uint pcbNeeded, ref uint pcReturned);
+
+        [DllImport("winspool.drv", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        public static extern int GetPrinter(IntPtr hPrinter, Int32 dwLevel, IntPtr pPrinter, Int32 dwBuf, out Int32 dwNeeded);
+
+        [DllImport("winspool.drv", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        public static extern int SetPrinter(IntPtr hPrinter, Int32 dwLevel, IntPtr pPrinter, Int32 uCommand);
     }
 }
