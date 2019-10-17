@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="NameConstants.cs" />
     <Compile Include="PrinterChangeTests.cs" />
+    <Compile Include="PrinterNotifyOptionsTest.cs" />
     <Compile Include="Support\NativeMethods.cs" />
     <Compile Include="Support\PORT_INFO_1.cs" />
     <Compile Include="Support\PrinterEnumFlags.cs" />
