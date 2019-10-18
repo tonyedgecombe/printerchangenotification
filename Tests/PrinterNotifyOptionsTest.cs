@@ -98,6 +98,9 @@ namespace Tests
             var comment = change.Data.First(d => d.Field == (int) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_COMMENT).Value;
             Assert.That(comment, Is.EqualTo(randomComment + "Comment"));
 
+            var location = change.Data.First(d => d.Field == (int) PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_LOCATION).Value;
+            Assert.That(location, Is.EqualTo(randomComment + "Location"));
+
             var newPriority = change.Data.First(d => d.Field == (int)PRINTER_NOTIFY_FIELD.PRINTER_NOTIFY_FIELD_PRIORITY).Value;
             Assert.That(newPriority, Is.EqualTo(priority));
         }
