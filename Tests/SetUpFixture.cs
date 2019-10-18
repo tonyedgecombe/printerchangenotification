@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Tests.Support;
 
@@ -37,10 +36,16 @@ namespace Tests
             // We can't delete the port until we have deleted the printer
             if (!_printerExistedBeforeTests)
             {
+                // Setting the printer port makes deleting the port more reliable
                 using (var printer = new SafePrinter(NameConstants.PrinterName))
                 {
-                    printer.Delete();
+                    var pi2 = printer.GetPrinter();
+                    pi2.pPortName = "FILE:";
+                    printer.SetPrinter(pi2, 0);
                 }
+
+                using var printer2 = new SafePrinter(NameConstants.PrinterName);
+                printer2.Delete();
             }
 
             if (!_portExistedBeforeTests)
