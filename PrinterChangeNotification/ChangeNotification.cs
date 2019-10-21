@@ -61,6 +61,11 @@ namespace PrinterChangeNotification
                 // Don't let SafeWaitHandle own the handle as it can't close it
                 notification.SafeWaitHandle = new SafeWaitHandle(notification._changeHandle, false);
             }
+            catch
+            {
+                NativeMethods.ClosePrinter(notification._printerHandle);
+                throw;
+            }
             finally
             {
                 Marshal.FreeHGlobal(ptrNotifyOptions);
