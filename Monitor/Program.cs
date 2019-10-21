@@ -66,10 +66,9 @@ namespace Monitor
                 throw new Exception("Either or both of printer changes or fields to monitor must be set.");
             }
 
-            using var printerChangeNotification = ChangeNotification.Create(printerName,
-                                                change,
-                                                PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL,
-                                                printerNotifyOptions);
+            using var printerChangeNotification = ChangeNotification.Create(change,
+                                                printerName,
+                                                PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, printerNotifyOptions);
             
             while (true)
             {

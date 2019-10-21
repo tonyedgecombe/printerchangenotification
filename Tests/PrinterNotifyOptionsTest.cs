@@ -28,7 +28,7 @@ namespace Tests
                 }
             };
 
-            using var changeNotification = ChangeNotification.Create(NameConstants.PrinterName, 0, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
+            using var changeNotification = ChangeNotification.Create(0, NameConstants.PrinterName, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
 
             // If we don't close the printer handle before calling WaitOne then WaitOne can block indefinitely
             using (var printer = new SafePrinter(NameConstants.PrinterName))
@@ -74,7 +74,7 @@ namespace Tests
                 }
             };
 
-            using var changeNotification = ChangeNotification.Create(NameConstants.PrinterName, 0, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
+            using var changeNotification = ChangeNotification.Create(0, NameConstants.PrinterName, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
 
             // If we don't close the printer handle before calling WaitOne then WaitOne can block indefinitely
             using (var printer = new SafePrinter(NameConstants.PrinterName))

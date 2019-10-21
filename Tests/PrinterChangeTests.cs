@@ -12,7 +12,7 @@ namespace Tests
         [Test]
         public void SetPrinter()
         {
-            using var changeNotification = ChangeNotification.Create(NameConstants.PrinterName, PRINTER_CHANGE.PRINTER_CHANGE_PRINTER, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, null);
+            using var changeNotification = ChangeNotification.Create(PRINTER_CHANGE.PRINTER_CHANGE_PRINTER, NameConstants.PrinterName, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, null);
 
             // Make sure changeNotification isn't signaled before we start
             Assert.That(changeNotification.WaitHandle.WaitOne(0), Is.False);

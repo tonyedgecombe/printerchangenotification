@@ -26,7 +26,7 @@ namespace Tests
                 }
             };
 
-            using var changeNotification = ChangeNotification.Create(NameConstants.PrinterName, 0, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
+            using var changeNotification = ChangeNotification.Create(0, NameConstants.PrinterName, PRINTER_NOTIFY_CATEGORY.PRINTER_NOTIFY_CATEGORY_ALL, options);
 
             using var localPrintServer = new LocalPrintServer();
             var defaultPrintQueue = localPrintServer.GetPrintQueue(NameConstants.PrinterName);
