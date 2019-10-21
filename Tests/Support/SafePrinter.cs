@@ -98,8 +98,7 @@ namespace Tests.Support
 
                 var result = Marshal.PtrToStructure<PRINTER_INFO_2>(address);
 
-                // TODO Marshalling of PRINTER_INFO_2 pointers
-                // In the mean time for this application we don't need them.
+                // As we don't retain the allocated memory remove the pointers to that memory.
                 result.pSecurityDescriptor = IntPtr.Zero;
                 result.pDevMode = IntPtr.Zero;
 
